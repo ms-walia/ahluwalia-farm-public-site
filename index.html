@@ -8,7 +8,17 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>
+/* mobile check: tag the page by device so CSS and scripts can adapt (touch = phones and tablets, phone = narrow screens) */
+(function () {
+  var r = document.documentElement, mq = function (q) { return window.matchMedia && matchMedia(q).matches; };
+  var touch = mq('(hover: none) and (pointer: coarse)') || ('ontouchstart' in window && Math.min(screen.width, screen.height) < 900);
+  r.classList.add(touch ? 'is-touch' : 'is-pointer');
+  if (touch && Math.min(innerWidth, innerHeight) < 600) r.classList.add('is-phone');
+  r.style.setProperty('--vh-px', innerHeight + 'px');
+})();
+</script>
 <title>Ahluwalia Farm — Raw honey &amp; cage-free eggs, Amritsar</title>
 <meta name="description" content="Raw &amp; unprocessed honey in five varieties and fresh cage-free eggs from Ahluwalia Farm, Amritsar, Punjab. Order on WhatsApp.">
 <meta name="generator" content="8B Templates">
@@ -1540,6 +1550,39 @@ button { font: inherit; color: inherit; }
 #tickets .tk-stub .m-btn { white-space: nowrap; flex: none; }
 }
 </style>
+<style data-8b-part="section:mobile">
+@layer sections {
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; -webkit-tap-highlight-color: transparent; }
+html.is-touch { overscroll-behavior-y: none; }
+html.is-touch body { -webkit-touch-callout: none; }
+html.is-touch a, html.is-touch button, html.is-touch summary { touch-action: manipulation; }
+/* phones and tablets: same look, cheaper to paint. Filters, blend modes and big shadows are what make scroll animations stutter on phone GPUs. */
+html.is-touch #opening .op-title,
+html.is-touch #opening .op-two__head h2, html.is-touch #opening .op-two__head .m-text-3,
+html.is-touch #lineup .m-text-3, html.is-touch #zones .m-text-3, html.is-touch #food .m-text-3, html.is-touch #partners .m-text-3,
+html.is-touch #fanwall .m-text-3, html.is-touch #faq .m-text-3, html.is-touch #contact .m-text-3, html.is-touch #reviews .m-text-3,
+html.is-touch #zones .zn-item h3, html.is-touch #partners .pt-col h3 { filter: none; }
+html.is-touch #battle .bt-side img { filter: none; }
+html.is-touch #battle .bt-side::after { mix-blend-mode: normal; opacity: .5; }
+html.is-touch #partners .pt-man img { filter: none; }
+html.is-touch #partners .pt-man::after { display: none; }
+html.is-touch #fanwall .fw-grade { mix-blend-mode: normal; opacity: .22; }
+html.is-touch #reviews .rv-arrow { backdrop-filter: none; -webkit-backdrop-filter: none; }
+html.is-touch #opening .op-zoom, html.is-touch #opening .op-drift, html.is-touch #opening .op-title,
+html.is-touch #battle .bt-name, html.is-touch #battle .bt-side, html.is-touch #zones .zn-map, html.is-touch #looks .lk-track,
+html.is-touch #tickets .tk-fl, html.is-touch #reviews .rv-track { will-change: transform; backface-visibility: hidden; }
+html.is-touch .m-ring { will-change: transform; }
+@media (max-width: 860px) { #battle .bt-rounds { align-items: start; } #battle .bt-round { align-content: start; } }
+/* if the first scroll measures slow, drop the remaining soft shadows too */
+html.is-slow #opening .op-upper, html.is-slow #opening .op-lower, html.is-slow #opening .op-meta,
+html.is-slow #battle .bt-copy, html.is-slow #opening .op-two__note, html.is-slow #opening .op-two__foot,
+html.is-slow #partners p, html.is-slow #partners li, html.is-slow #fanwall p, html.is-slow #faq p, html.is-slow #faq summary,
+html.is-slow #contact p, html.is-slow #contact dt, html.is-slow #contact dd, html.is-slow #contact a, html.is-slow #zones .zn-item p,
+html.is-slow #zones .zn-head p { text-shadow: none; }
+html.is-slow #reviews .rv-marquee { -webkit-mask-image: none; mask-image: none; }
+html.is-slow #tickets .tk-fl img { box-shadow: none; }
+}
+</style>
 </head>
 <body class="m-text">
 <a class="skip m-text-4" href="#main">Skip to content</a>
@@ -2067,12 +2110,15 @@ function refreshScroll() {
   ScrollTrigger.sort();
   ScrollTrigger.refresh();
 }
+const isTouch = document.documentElement.classList.contains('is-touch');
+/* phones: the address bar showing and hiding resizes the page; do not let that re-measure every scene mid-scroll */
+ScrollTrigger.config({ ignoreMobileResize: true, autoRefreshEvents: isTouch ? 'visibilitychange,DOMContentLoaded,load' : 'visibilitychange,DOMContentLoaded,load,resize' });
 gsap.matchMedia().add('(prefers-reduced-motion: no-preference)', () => {
-  const lenis = window.lenis = new Lenis({ lerp: .11, anchors: { offset: -navHeight() } });
+  const lenis = window.lenis = new Lenis({ lerp: .11, syncTouch: false, anchors: { offset: -navHeight() } });
   const tick = time => lenis.raf(time * 1000);
   lenis.on('scroll', ScrollTrigger.update);
   gsap.ticker.add(tick);
-  gsap.ticker.lagSmoothing(0);
+  if (isTouch) gsap.ticker.lagSmoothing(500, 33); else gsap.ticker.lagSmoothing(0);
   return () => { gsap.ticker.remove(tick); gsap.ticker.lagSmoothing(500, 33); lenis.destroy(); window.lenis = null; };
 });
 </script>
@@ -2392,6 +2438,29 @@ queueMotion(() => {
       .fromTo(section.querySelector('h2'), { '--heat': 0 }, { '--heat': 1, duration: .7 }, .2);
   });
 });
+</script>
+<script data-8b-part="mobile-check">
+/* mobile check, part 2: on touch devices, time the first moments of scrolling. If frames are slow, switch on the lighter paint mode (html.is-slow). */
+(function () {
+  var root = document.documentElement;
+  if (!root.classList.contains('is-touch')) return;
+  var started = false;
+  function sample() {
+    if (started) return; started = true;
+    var n = 0, last = 0, total = 0;
+    requestAnimationFrame(function frame(t) {
+      if (last) { total += Math.min(t - last, 200); n++; }
+      last = t;
+      if (n < 80) return requestAnimationFrame(frame);
+      if (total / n > 24) root.classList.add('is-slow');
+    });
+  }
+  addEventListener('scroll', sample, { passive: true, once: true });
+  addEventListener('touchmove', sample, { passive: true, once: true });
+  var lastW = innerWidth;
+  addEventListener('orientationchange', function () { setTimeout(function () { if (window.ScrollTrigger) ScrollTrigger.refresh(); }, 350); });
+  addEventListener('resize', function () { if (innerWidth !== lastW) { lastW = innerWidth; if (window.ScrollTrigger) ScrollTrigger.refresh(); } });
+})();
 </script>
 <div class="cart-toast" id="carttoast" role="status" hidden><span id="carttoasttext">Added to cart</span><a href="orders.html">View cart</a></div>
 <script src="app.js"></script>
