@@ -1056,6 +1056,34 @@ button { font: inherit; color: inherit; }
 }
 }
 </style>
+<style data-8b-part="section:gulkand">
+@layer sections {
+#gulkand { padding: clamp(70px, 11svh, 130px) 0 clamp(70px, 10svh, 120px); overflow: clip; }
+#gulkand .gk-head { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 20px; align-items: end; margin-bottom: clamp(40px, 7svh, 80px); }
+#gulkand .gk-head h2 { grid-column: 1 / 8; color: var(--color-1); background-image: none; -webkit-text-fill-color: currentColor; }
+#gulkand .gk-head p { grid-column: 8 / -1; max-width: 40ch; }
+#gulkand .gk-rows { display: grid; gap: clamp(48px, 8svh, 90px); padding-inline: var(--space-2); }
+#gulkand .gk-row { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: clamp(28px, 4vw, 64px); align-items: center; }
+#gulkand .gk-photo { margin: 0; aspect-ratio: 4 / 3; overflow: hidden; border-radius: 22px; box-shadow: 0 24px 50px color-mix(in srgb, var(--color-4) 28%, transparent); }
+#gulkand .gk-photo img { width: 100%; height: 100%; object-fit: cover; }
+#gulkand .gk-copy { display: grid; gap: 14px; justify-items: start; max-width: 42ch; }
+#gulkand .gk-copy .m-badge { color: var(--color-2); border-color: currentColor; }
+#gulkand .gk-price { opacity: .85; }
+#gulkand .gk-cta { color: var(--color-2); }
+/* row a: jar on the left, text on the right. row b (below it): jar on the right, text on the left */
+#gulkand .gk-row--a .gk-photo { grid-column: 1 / 7; }
+#gulkand .gk-row--a .gk-copy { grid-column: 8 / -1; }
+#gulkand .gk-row--b .gk-photo { grid-column: 7 / -1; grid-row: 1; }
+#gulkand .gk-row--b .gk-copy { grid-column: 1 / 6; grid-row: 1; }
+@media (max-width: 860px) {
+  #gulkand .gk-head { grid-template-columns: minmax(0, 1fr); row-gap: 16px; }
+  #gulkand .gk-head h2, #gulkand .gk-head p { grid-column: 1; }
+  #gulkand .gk-row { grid-template-columns: minmax(0, 1fr); row-gap: 18px; }
+  #gulkand .gk-row--a .gk-photo, #gulkand .gk-row--a .gk-copy,
+  #gulkand .gk-row--b .gk-photo, #gulkand .gk-row--b .gk-copy { grid-column: 1; grid-row: auto; }
+}
+}
+</style>
 <style data-8b-part="section:battle">
 @layer sections {
 #battle { background: var(--color-4); }
@@ -1820,6 +1848,35 @@ html.is-slow #tickets .tk-fl img { box-shadow: none; }
     </li>
   </ol>
   <p class="lu-more wrap m-text-4">+ turmeric powder, mustard oil and premium dals &amp; pulses, coming soon</p>
+</section>
+<!-- gulkand: new product intro, two alternating rows (jar photo / copy swap sides) -->
+<section id="gulkand" class="slide slide--light" data-8b-section="gulkand" aria-labelledby="gulkand-title">
+  <div class="gk-head wrap">
+    <h2 class="m-text-3" id="gulkand-title" data-8b-motion="heat">Honey Rose Gulkand</h2>
+    <p class="m-text-5" data-8b-motion="rise">New in the collection: raw honey and rose petals, preserved the traditional way. No added sugar — only raw honey.</p>
+  </div>
+  <ol class="gk-rows">
+    <li class="gk-row gk-row--a">
+      <figure class="gk-photo"><img src="images/gulkand-250.webp" alt="A 250g jar of Ahluwalia Farm Honey Rose Gulkand on a wooden surface with scattered dried rose petals" width="1376" height="768" loading="lazy"></figure>
+      <div class="gk-copy">
+        <p class="m-badge">250g jar</p>
+        <h3 class="m-text-6">Honey Rose Gulkand</h3>
+        <p>Raw wild honey and rose petals with cardamom, fennel and liquorice, set the traditional way — AGMARK A+ grade honey, no added sugar.</p>
+        <p class="gk-price m-text-4">₹399</p>
+        <a class="gk-cta m-link" href="https://wa.me/917986839571?text=Hi%20Ahluwalia%20Farm%2C%20I%27d%20like%20to%20order%20the%20250g%20Honey%20Rose%20Gulkand." target="_blank" rel="noopener">Order on WhatsApp</a>
+      </div>
+    </li>
+    <li class="gk-row gk-row--b">
+      <figure class="gk-photo"><img src="images/gulkand-400.webp" alt="A 400g jar of Ahluwalia Farm Honey Rose Gulkand on a wooden surface with scattered dried rose petals" width="1376" height="768" loading="lazy"></figure>
+      <div class="gk-copy">
+        <p class="m-badge">400g jar</p>
+        <h3 class="m-text-6">Honey Rose Gulkand</h3>
+        <p>The same raw honey &amp; rose petal preserve in the bigger jar — made the pure way, best before 24 months from packaging.</p>
+        <p class="gk-price m-text-4">₹599</p>
+        <a class="gk-cta m-link" href="https://wa.me/917986839571?text=Hi%20Ahluwalia%20Farm%2C%20I%27d%20like%20to%20order%20the%20400g%20Honey%20Rose%20Gulkand." target="_blank" rel="noopener">Order on WhatsApp</a>
+      </div>
+    </li>
+  </ol>
 </section>
 <!-- battle: split screen: two sides with a moving VS line (here: hive and hen) (animation: scene:battle) -->
 <section id="battle" class="slide" data-8b-section="battle" aria-labelledby="battle-title">
